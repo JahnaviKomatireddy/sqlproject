@@ -1,12 +1,13 @@
-DROP DATABASE librarydb;
 CREATE DATABASE librarydb;
 USE librarydb;
+
 CREATE TABLE Student (
 studentId INT PRIMARY KEY,
     name VARCHAR(100),
     department VARCHAR(50),
     joinDate DATE
     );
+
 CREATE TABLE Books (
     bookId INT PRIMARY KEY,
     title VARCHAR(100),
@@ -14,6 +15,7 @@ CREATE TABLE Books (
     category VARCHAR(100),
     price INT
 );
+
 CREATE TABLE IssuedBooks (
     issueId INT PRIMARY KEY,
     studentId INT,
@@ -24,6 +26,7 @@ CREATE TABLE IssuedBooks (
     FOREIGN KEY (studentId) REFERENCES Student(studentId),
     FOREIGN KEY (bookId) REFERENCES Books(bookId)
 );
+
 INSERT INTO Student VALUES (101, 'Jahnavi', 'CSE', '2022-06-10');
 INSERT INTO Student VALUES (102, 'Sharanya', 'ECE', '2022-06-15');
 INSERT INTO Student VALUES (103, 'Sneha', 'IT', '2022-07-12');
@@ -34,6 +37,7 @@ INSERT INTO Student VALUES (107, 'Abhijeeth', 'IT', '2022-06-18');
 INSERT INTO Student VALUES (108, 'Varsha', 'CSE', '2022-06-30');
 INSERT INTO Student VALUES (109, 'Preethi', 'ECE', '2022-07-01');
 INSERT INTO Student VALUES (110, 'Uday', 'AIML', '2022-07-22');
+
 INSERT INTO Books VALUES (1, 'It Ends With Us', 'Colleen Hoover', 'Romance', 399);
 INSERT INTO Books VALUES (3, 'Atomic Habits', 'James Clear', 'Personality Developmet', 500);
 INSERT INTO Books VALUES (7, 'Ikigai', 'Hector Garcia', 'Personality Development', 300);
@@ -45,6 +49,7 @@ INSERT INTO Books VALUES (8, 'Wings of Fire', 'A.P.J Abdul Kalam', 'Biography', 
 INSERT INTO Books VALUES (9, 'Malgudi Days', 'R.K. Narayan', 'Fiction', 300);
 INSERT INTO Books VALUES (10, 'The Fault in Our Stars', 'John Green', 'Romance', 350);
 INSERT INTO IssuedBooks VALUES (1, 101, 1, '2026-02-01', '2026-02-10', 0);
+
 ALTER TABLE IssuedBooks MODIFY fineamount INT;
 INSERT INTO IssuedBooks VALUES (2, 102, 2, '2026-02-05', NULL, 0);
 INSERT INTO IssuedBooks VALUES (4, 104, 4, '2026-02-10', NULL, 0);
@@ -55,12 +60,20 @@ INSERT INTO IssuedBooks VALUES (7, 107, 7, '2026-03-08', '2026-03-15', 0);
 INSERT INTO IssuedBooks VALUES (8, 108, 8, '2026-02-15', NULL, 0);
 INSERT INTO IssuedBooks VALUES (10, 110, 10, '2026-02-20', NULL, 0);
 INSERT INTO IssuedBooks VALUES (9, 109, 9, '2026-03-10', '2026-03-18', 0);
+
+-- students who haven’t returned books within 14 days
 SELECT s.name, b.title, i.issueDate FROM IssuedBooks i
 JOIN Student s ON i.studentId = s.studentId
 JOIN Books b ON i.bookId = b.bookId
 WHERE i.returnDate IS NULL AND DATEDIFF(CURDATE(), i.issueDate) > 14;
+
+-- Most popular category
 SELECT b.category, COUNT(*) AS total_borrowed FROM IssuedBooks i
 JOIN Books b ON i.bookId = b.bookId
 GROUP BY b.category
 ORDER BY total_borrowed DESC;
 
+-- Remove students who haven’t borrowed any book in last 3 years
+DELETE FROM Students
+WHERE StudentID NOT IN (SELECT DISTINCT StudentID FROM IssedBooks
+WHERE IssueDate >= CURDATE() - INTERVAL 3 YEAR);
