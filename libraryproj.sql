@@ -67,6 +67,13 @@ JOIN Student s ON i.studentId = s.studentId
 JOIN Books b ON i.bookId = b.bookId
 WHERE i.returnDate IS NULL AND DATEDIFF(CURDATE(), i.issueDate) > 14;
 
+-- Students with currently issued books
+SELECT s.name, COUNT(*) AS currentissued
+FROM IssuedBooks i
+JOIN Student s ON i.studentId = s.studentId
+WHERE i.returnDate IS NULL
+GROUP BY s.name;
+
 -- Most popular category
 SELECT b.category, COUNT(*) AS total_borrowed FROM IssuedBooks i
 JOIN Books b ON i.bookId = b.bookId
