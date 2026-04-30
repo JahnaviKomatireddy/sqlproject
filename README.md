@@ -31,3 +31,9 @@ BookID (Foreign Key)
 StudentID (Foreign Key)
 IssueDate
 ReturnDate
+
+Overdue Logic
+![](overduelogic.png)
+
+Most Borrowed Category
+![](mostborrowed.png)
